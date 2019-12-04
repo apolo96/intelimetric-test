@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\API\RestaurantController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,6 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('v1')->namespace('API')->group(function(){
+    Route::get('restaurants', [RestaurantController::class, 'index']);
+    Route::get('restaurants/{restaurant}', [RestaurantController::class, 'show']);
+    Route::post('restaurants', [RestaurantController::class, 'store']);
+    Route::put('restaurants/{restaurant}', [RestaurantController::class, 'update']);
+    Route::delete('restaurants/{restaurant}', [RestaurantController::class, 'destroy']);
 });
+
