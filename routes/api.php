@@ -14,6 +14,7 @@ use App\Http\Controllers\API\RestaurantController;
 */
 
 Route::prefix('v1')->namespace('API')->group(function(){
+    Route::get('restaurants/statistics',[RestaurantController::class, 'statistic']);
     Route::get('restaurants', [RestaurantController::class, 'index']);
     Route::get('restaurants/{restaurant}', [RestaurantController::class, 'show']);
     Route::post('restaurants', [RestaurantController::class, 'store']);
