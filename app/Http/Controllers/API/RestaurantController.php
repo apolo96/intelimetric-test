@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RestaurantRequest;
 use App\Restaurant;
-use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Webpatser\Uuid\Uuid;
 
 class RestaurantController extends Controller
@@ -12,7 +14,7 @@ class RestaurantController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function index()
     {
@@ -22,25 +24,15 @@ class RestaurantController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     * @throws \Exception
+     * @param RestaurantRequest $request
+     * @return JsonResponse
+     * @throws Exception
      */
-    public function store(Request $request)
+    public function store(RestaurantRequest $request)
     {
-        $restaurant = Restaurant::create([
-            'uuid' => Uuid::generate()->string,
-            'name' => $request->name,
-            'rating' => $request->rating,
-            'site' => $request->site,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'street' => $request->street,
-            'city' => $request->city,
-            'state' => $request->state,
-            'lat' => $request->lat,
-            'lng' => $request->lng
-        ]);
+        $request = $request->validated();
+        $request['uuid'] = Uuid::generate()->string;
+        $restaurant = Restaurant::create($request);
 
         return response()->json($restaurant,201);
     }
@@ -48,8 +40,8 @@ class RestaurantController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Restaurant  $restaurant
-     * @return \Illuminate\Http\Response
+     * @param Restaurant $restaurant
+     * @return JsonResponse
      */
     public function show(Restaurant $restaurant)
     {
@@ -59,23 +51,23 @@ class RestaurantController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Restaurant  $restaurant
-     * @return \Illuminate\Http\Response
+     * @param RestaurantRequest $request
+     * @param Restaurant $restaurant
+     * @return JsonResponse
      */
-    public function update(Request $request, Restaurant $restaurant)
+    public function update(RestaurantRequest $request, Restaurant $restaurant)
     {
-
-        $restaurant->update($request->all());
+        $request = $request->validated();
+        $restaurant->update($request);
         return response()->json($restaurant);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Restaurant $restaurant
-     * @return \Illuminate\Http\Response
-     * @throws \Exception
+     * @param Restaurant $restaurant
+     * @return JsonResponse
+     * @throws Exception
      */
     public function destroy(Restaurant $restaurant)
     {
